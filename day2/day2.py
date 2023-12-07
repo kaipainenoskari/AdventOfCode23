@@ -11,24 +11,26 @@ with open('day2/input2.txt') as file:
 
         lines[split[0]] = sets
 
-def helper(l):
+def helper(l) -> list[int]:
     values = {'red': 0, 'green': 0, 'blue': 0}
-    for list in l:
-        for item in list:
-            valueAndColor = item.split(" ")
-            v = int(valueAndColor[0])
-            color = valueAndColor[1]
-            values[color] += v
-            if requirements['red'] < values['red'] or requirements['green'] < values['green'] or requirements['blue'] < values['blue']:
-                return False
-            values = {'red': 0, 'green': 0, 'blue': 0}
+    ret = []
+    for game in l:
+        for list in game:
+            current = {'red': 0, 'green': 0, 'blue': 0}
+            for item in list:
+                valueAndColor = item.split(" ")
+                v = int(valueAndColor[0])
+                color = valueAndColor[1]
+                current[color] += v
+            values['red'] = max(values['red'], current['red'], 1)
+            values['green'] = max(values['green'], current['green'], 1)
+            values['blue'] = max(values['blue'], current['blue'], 1)
+        add = values['red'] * values['green'] * values['blue']
+        ret.append(add)
+        values = {'red': 0, 'green': 0, 'blue': 0}
         
-    return True
+    return ret
 
-sum = 0
-for game, cubes in lines.items():
-    add = True
-    if helper(cubes):
-        sum += int(game.split(" ")[-1])
+ret = sum(helper(lines.values()))
 
-print(sum)
+print(ret)
